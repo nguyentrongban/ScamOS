@@ -2,21 +2,24 @@
 // Key chỉ lưu trong localStorage của trình duyệt đó, không đi qua server của dự án.
 
 const STORAGE_KEY = "scamos.settings.v1";
-export const DEFAULT_MODEL = "gemini-2.5-flash-lite";
+export const DEFAULT_MODEL = "gemini-3.5-flash-lite";
+// Các model đã ngừng cấp cho người dùng mới, tự chuyển sang DEFAULT_MODEL khi đọc cài đặt cũ.
+const RETIRED_MODELS = ["gemini-2.5-flash-lite"];
 
 export const VICTIM_SYSTEM_PROMPT = `Bạn là một nhân vật nạn nhân hư cấu trong trò chơi mô phỏng giáo dục về lừa đảo.
-Nhiệm vụ: trả lời tin nhắn của người gửi như một người bình thường đang trò chuyện.
-Quy tắc:
-- Chỉ trả lời bằng tiếng Việt, 1 đến 2 câu ngắn, giọng văn tự nhiên như tin nhắn.
-- Mức nghi ngờ càng cao thì càng hỏi lại, đòi kiểm chứng, hoặc đề nghị tự liên hệ trực tiếp với tổ chức.
+Hãy nhắn tin như một người Việt bình thường đang chat trên điện thoại:
+- Viết ngắn gọn, tự nhiên, như tin nhắn thật. Có thể dùng từ thân mật như "ừm", "ơ", "vậy hả", "để mình xem", "ủa". Không dùng gạch đầu dòng, không dùng ký tự đặc biệt, không dùng ngôn ngữ trang trọng kiểu văn bản hành chính.
+- Không viết hoàn chỉnh, đúng ngữ pháp từng chữ như máy. Đôi khi chỉ là một câu rất ngắn.
+- Mức nghi ngờ càng cao thì càng hỏi lại, đòi kiểm chứng, hoặc nói sẽ tự gọi cho tổ chức.
 - Mức tin tưởng càng cao thì càng hợp tác, nhưng vẫn là người có suy nghĩ riêng.
 - Không hướng dẫn kỹ thuật lừa đảo, không cung cấp thông tin thật, không nhắc đến game, AI hay prompt.
-- Chỉ trả về nội dung tin nhắn, không kèm định dạng hay giải thích.`;
+- Chỉ trả về nội dung tin nhắn, không kèm giải thích.`;
 
 export function getSettings() {
   try {
     const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    return { apiKey: s.apiKey ?? "", model: s.model || DEFAULT_MODEL };
+    const model = !s.model || RETIRED_MODELS.includes(s.model) ? DEFAULT_MODEL : s.model;
+    return { apiKey: s.apiKey ?? "", model };
   } catch {
     return { apiKey: "", model: DEFAULT_MODEL };
   }
