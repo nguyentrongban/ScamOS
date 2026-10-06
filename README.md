@@ -1,60 +1,24 @@
 # ScamOS
 
-ScamOS is a fictional desktop-computer simulation game built with React + Vite + Tailwind CSS.
+Game mô phỏng giáo dục về lừa đảo. Người chơi đóng vai người lừa đảo trên một màn hình máy tính giả lập.
 
-## Stack
-
-- React
-- Vite
-- Tailwind CSS
-- Lucide React
-
-## Run locally
+## Chạy local
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the local Vite URL.
+## Cấu hình AI (tùy chọn)
 
-## Build
+Nếu không nhập key, game dùng câu trả lời mẫu và vẫn chơi bình thường.
 
-```bash
-npm run build
-npm run preview
-```
+1. Lấy Gemini API key miễn phí tại Google AI Studio.
+2. Mở **Start → Settings** trong game, dán key và bấm **Lưu**.
+3. Bấm **Kiểm tra** để xác nhận key hoạt động.
 
-## Deploy to Vercel
+Key được lưu trong localStorage của trình duyệt, không đi qua server của dự án. Mỗi người chơi dùng key và hạn mức của chính họ.
 
-1. Push this folder to GitHub.
-2. Import the repository into Vercel.
-3. Vercel should detect Vite automatically.
-4. Build command: `npm run build`
-5. Output directory: `dist`
+## Deploy lên Vercel
 
-The included `vercel.json` keeps the single-page app working on direct routes.
-
-## Project structure
-
-```text
-src/
-  apps/
-    FakeProofStudio.jsx
-    ScamNotes.jsx
-    ShadowWallet.jsx
-    TeleCRM.jsx
-  components/
-    DesktopIcon.jsx
-    StartMenu.jsx
-    Taskbar.jsx
-    Window.jsx
-  data/
-    contacts.js
-  App.jsx
-  main.jsx
-  styles/
-    index.css
-```
-
-This is intentionally UI-first so gameplay systems, saves, authentication, networking and multiplayer can be added later without replacing the desktop architecture.
+Đưa repo lên GitHub, rồi trên Vercel chọn **Add New → Project** và chọn repo. Vercel tự nhận Vite (build `npm run build`, output `dist`). Không cần biến môi trường nào.
