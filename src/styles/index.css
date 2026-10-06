@@ -239,3 +239,29 @@ button { cursor: pointer; }
   .taskbar-app span { display: none; }
   .taskbar-status { gap: 4px; }
 }
+/* ---- Sửa hiển thị trên điện thoại ---- */
+.desktop { height: 100vh; height: 100dvh; overflow: hidden; }
+
+@media (max-width: 620px) {
+  .window, .window.window-maximized {
+    left: 6px !important;
+    top: 6px !important;
+    width: calc(100% - 12px) !important;
+    height: calc(100% - 66px) !important;
+    max-height: none;
+  }
+  .telecrm { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); height: 100%; }
+  .tele-sidebar { border-right: 0; border-bottom: 1px solid #1d2935; overflow: hidden; }
+  .crm-brand, .crm-search { display: none; }
+  .contact-list {
+    height: auto; display: flex; gap: 4px; padding: 6px;
+    overflow-x: auto; overflow-y: hidden;
+  }
+  .contact { width: auto; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 4px; padding: 6px 8px; min-width: 70px; }
+  .contact .min-w-0 { max-width: 70px; text-align: center; }
+  .trust-mini { display: none; }
+  .crm-chat { min-height: 0; }
+  .chat-messages { min-height: 0; padding: 10px; }
+  .message-bubble { max-width: 85%; }
+  .chat-head { height: 46px; }
+}
