@@ -1,16 +1,16 @@
 import React from "react";
 import { Power, RotateCcw, Settings, Volume2, UserRound, Search } from "lucide-react";
 
-export default function StartMenu({ onOpen, onClose, onRestart }) {
+export default function StartMenu({ onOpen, onClose, onRestart, profileName = "Operator" }) {
   return (
     <div className="start-menu" onMouseDown={(e) => e.stopPropagation()}>
-      <div className="start-profile">
-        <div className="profile-avatar">S</div>
-        <div>
-          <div className="font-semibold">Operator</div>
-          <div className="text-xs text-slate-500">ScamOS local account</div>
+      <button className="start-profile" onClick={() => onOpen("profile")}>
+        <div className="profile-avatar">{profileName.charAt(0).toUpperCase()}</div>
+        <div className="text-left">
+          <div className="font-semibold">{profileName}</div>
+          <div className="text-xs text-slate-500">Nhấn để xem tài khoản</div>
         </div>
-      </div>
+      </button>
 
       <div className="start-search">
         <Search size={15} />
