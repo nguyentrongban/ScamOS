@@ -1,18 +1,28 @@
-import React, { useMemo, useState } from "react";
-import { Paperclip, Send, Search, Phone, MoreHorizontal } from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Paperclip, Send, Search, Phone, MoreHorizontal, Lock } from "lucide-react";
 
-export default function TeleCRM({ contacts }) {
-  const [selected, setSelected] = useState(contacts[0]);
+export default function TeleCRM({ contacts, onSend }) {
+  const [selectedId, setSelectedId] = useState(contacts[0].id);
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
+  const endRef = useRef(null);
+
+  const selected = contacts.find((c) => c.id === selectedId) ?? contacts[0];
+  const locked = selected.status !== "active";
 
   const filtered = useMemo(
     () => contacts.filter((c) => `${c.name} ${c.handle}`.toLowerCase().includes(query.toLowerCase())),
     [contacts, query]
   );
 
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selected.messages.length, selected.typing]);
+
   const send = () => {
-    if (!message.trim()) return;
+    const text = message.trim();
+    if (!text || locked) return;
+    onSend(selected.id, text);
     setMessage("");
   };
 
@@ -35,12 +45,14 @@ export default function TeleCRM({ contacts }) {
             <button
               key={contact.id}
               className={`contact ${selected.id === contact.id ? "selected" : ""}`}
-              onClick={() => setSelected(contact)}
+              onClick={() => setSelectedId(contact.id)}
             >
               <div className="avatar">{contact.avatar}<i className={contact.online ? "online" : ""} /></div>
               <div className="min-w-0 flex-1 text-left">
                 <div className="truncate text-sm font-semibold">{contact.name}</div>
-                <div className="truncate text-xs text-slate-500">{contact.handle}</div>
+                <div className="truncate text-xs text-slate-500">
+                  {contact.status === "active" ? contact.handle : "🚫 đã báo cáo"}
+                </div>
               </div>
               <span className="trust-mini">{contact.trust}</span>
             </button>
@@ -52,10 +64,12 @@ export default function TeleCRM({ contacts }) {
         <div className="chat-head">
           <div>
             <div className="font-semibold">{selected.name}</div>
-            <div className="text-xs text-emerald-400">{selected.online ? "online" : "offline"}</div>
+            <div className="text-xs text-emerald-400">
+              {locked ? "offline • đã khóa" : selected.typing ? "đang nhập..." : selected.online ? "online" : "offline"}
+            </div>
           </div>
           <div className="flex gap-1">
-            <button className="icon-btn"><Phone size={16} /></button>
+            <button className="icon-btn" title="Gọi (không khả dụng trong game)"><Phone size={16} /></button>
             <button className="icon-btn"><MoreHorizontal size={17} /></button>
           </div>
         </div>
@@ -70,18 +84,30 @@ export default function TeleCRM({ contacts }) {
               </div>
             </div>
           ))}
+          {selected.typing && (
+            <div className="message-row">
+              <div className="message-bubble"><small>...</small></div>
+            </div>
+          )}
+          <div ref={endRef} />
         </div>
 
-        <div className="chat-input">
-          <button className="icon-btn"><Paperclip size={17} /></button>
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Type a message..."
-          />
-          <button className="send-btn" onClick={send}><Send size={15} /></button>
-        </div>
+        {locked ? (
+          <div className="chat-input justify-center text-xs text-rose-400">
+            <Lock size={14} /> &nbsp;Cuộc trò chuyện đã bị khóa
+          </div>
+        ) : (
+          <div className="chat-input">
+            <button className="icon-btn"><Paperclip size={17} /></button>
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && send()}
+              placeholder="Type a message..."
+            />
+            <button className="send-btn" onClick={send}><Send size={15} /></button>
+          </div>
+        )}
       </main>
 
       <aside className="crm-insights">
@@ -96,11 +122,19 @@ export default function TeleCRM({ contacts }) {
         <Meter label="Suspicion" value={selected.suspicion} danger />
         <div className="crm-note">
           <div className="text-[10px] uppercase tracking-widest text-slate-500">AI note</div>
-          <p>Keep the conversation calm. Current profile is stable.</p>
+          <p>{aiNote(selected)}</p>
         </div>
       </aside>
     </div>
   );
+}
+
+function aiNote(c) {
+  if (c.status !== "active") return "Nạn nhân đã báo cáo. Cuộc trò chuyện bị khóa.";
+  if (c.suspicion >= 80) return "Nghi ngờ rất cao. Cân nhắc rút lui hoặc đổi cách tiếp cận.";
+  if (c.suspicion >= 50) return "Nạn nhân bắt đầu hỏi lại. Giữ giọng điệu bình tĩnh.";
+  if (c.trust >= 70) return "Mức tin tưởng tốt. Cuộc trò chuyện đang ổn định.";
+  return "Chưa rõ. Theo dõi phản ứng của nạn nhân.";
 }
 
 function Meter({ label, value, danger }) {

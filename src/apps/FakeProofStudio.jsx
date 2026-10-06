@@ -6,6 +6,8 @@ export default function FakeProofStudio() {
   const [amount, setAmount] = useState("12,500,000");
   const [recipient, setRecipient] = useState("NGUYEN MINH");
   const [rendered, setRendered] = useState(false);
+  const [ref] = useState(() => Math.floor(100000 + Math.random() * 899999));
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
 
   return (
     <div className="fakeproof">
@@ -47,8 +49,8 @@ export default function FakeProofStudio() {
           <div className="bill-amount">{amount} ₫</div>
           <div className="bill-meta">
             <span>RECIPIENT</span><b>{recipient}</b>
-            <span>REFERENCE</span><b>SCM-{Math.floor(100000 + Math.random() * 899999)}</b>
-            <span>DATE</span><b>05 OCT 2026</b>
+            <span>REFERENCE</span><b>SCM-{ref}</b>
+            <span>DATE</span><b>{today}</b>
           </div>
           <div className="bill-footer">SCAMOS GAME PROP • NOT A REAL FINANCIAL DOCUMENT</div>
         </div>
