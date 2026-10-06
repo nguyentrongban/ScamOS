@@ -15,9 +15,11 @@ export default function TeleCRM({ contacts, onSend }) {
     [contacts, query]
   );
 
+  // Chỉ cuộn khung chat xuống cuối. Không dùng scrollIntoView vì nó cuộn cả trang trên iPhone.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selected.messages.length, selected.typing]);
+    const box = endRef.current?.parentElement;
+    if (box) box.scrollTop = box.scrollHeight;
+  }, [selected.messages.length, selected.typing, selectedId]);
 
   const send = () => {
     const text = message.trim();
