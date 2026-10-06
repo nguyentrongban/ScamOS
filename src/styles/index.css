@@ -271,3 +271,48 @@ button { cursor: pointer; }
   html, body, #root { height: 100%; overflow: hidden; position: fixed; inset: 0; width: 100%; }
   .chat-input input, .crm-search input, .start-search input { font-size: 16px !important; }
 }
+
+/* Khóa khung desktop vào đúng vùng nhìn thấy, không cho Safari đẩy trang lên khi focus ô nhập */
+@media (max-width: 620px) {
+  .desktop { position: fixed; inset: 0; height: 100%; }
+  .window { overscroll-behavior: contain; }
+  .chat-input input, .crm-search input, .start-search input { touch-action: manipulation; }
+}
+
+/* Thanh chỉ số hiển thị ngay trong khung chat */
+.chat-meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 8px 13px; border-bottom: 1px solid #1c2935; background: #081018; }
+.mini-meter-label { display: flex; justify-content: space-between; font-size: 9px; color: #8295a6; }
+.mini-meter-label b { color: #c5d3de; font: 600 9px "JetBrains Mono", monospace; }
+.mini-meter .meter-track { height: 4px; margin-top: 4px; }
+@media (max-width: 620px) {
+  .chat-meters { padding: 6px 8px; gap: 6px; }
+  .mini-meter-label span { font-size: 8px; }
+}
+
+/* Gợi ý và tổng kết trong khung chat */
+.tip-line { margin: 6px auto; max-width: 92%; padding: 6px 9px; border-radius: 6px; background: #0d1a22; border: 1px dashed #24505e; color: #8fd3e3; font-size: 10px; line-height: 1.45; text-align: center; }
+.summary-box { margin: 12px auto; padding: 10px 12px; border-radius: 8px; background: #161521; border: 1px solid #3a2f55; color: #d6c8f0; font-size: 11px; line-height: 1.55; }
+
+/* Cấp bậc và tổng kết chi tiết */
+.rank-bar { padding: 8px 13px; border-bottom: 1px solid #1c2935; background: #0b131c; font-size: 10px; color: #8295a6; }
+.rank-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.rank-row b { color: #e0ebf2; }
+.rank-bar small { display: block; margin-top: 4px; font-size: 9px; color: #5f7485; }
+.summary-box { white-space: pre-line; text-align: left; }
+@media (max-width: 620px) { .rank-bar { padding: 6px 8px; } }
+
+/* Trang tài khoản */
+.profile-app { padding: 14px; overflow: auto; height: 100%; font-size: 12px; color: #c8d6e3; }
+.profile-head { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #1d2935; margin-bottom: 12px; }
+.profile-avatar.large { width: 48px; height: 48px; font-size: 18px; }
+.profile-name { font-weight: 700; font-size: 15px; color: #e6eef5; }
+.profile-rank { color: #58dfff; font-size: 11px; margin-top: 2px; }
+.profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.profile-tile { padding: 9px; border: 1px solid #1d2935; border-radius: 8px; background: #0b131c; display: flex; flex-direction: column; gap: 3px; }
+.profile-tile b { font-size: 16px; color: #e6eef5; }
+.profile-tile span { font-size: 9px; color: #6f8496; }
+.profile-section { margin-top: 12px; }
+.profile-title { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: #52687a; margin-bottom: 6px; }
+.profile-row { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid #17232e; }
+.profile-row small { color: #6f8496; }
+@media (max-width: 620px) { .profile-grid { grid-template-columns: repeat(2, 1fr); } }
