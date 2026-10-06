@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldAlert, Wifi, Volume2 } from "lucide-react";
 
-export default function Taskbar({ openWindows, activeWindow, onOpen, onStart }) {
+export default function Taskbar({ openWindows, activeWindow, onOpen, onStart, threat }) {
   const now = new Date();
   const time = now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
 
@@ -29,9 +29,9 @@ export default function Taskbar({ openWindows, activeWindow, onOpen, onStart }) 
       <div className="taskbar-status">
         <Wifi size={14} />
         <Volume2 size={14} />
-        <span className="threat-pill">
+        <span className="threat-pill" style={{ color: threat >= 60 ? "#fb7185" : undefined }}>
           <ShieldAlert size={13} />
-          Threat 15%
+          Threat {threat}%
         </span>
         <span className="cash-pill">$1,200</span>
         <span className="clock">{time}</span>

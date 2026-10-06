@@ -1,7 +1,7 @@
 import React from "react";
 import { Power, RotateCcw, Settings, Volume2, UserRound, Search } from "lucide-react";
 
-export default function StartMenu({ onOpen, onClose }) {
+export default function StartMenu({ onOpen, onClose, onRestart }) {
   return (
     <div className="start-menu" onMouseDown={(e) => e.stopPropagation()}>
       <div className="start-profile">
@@ -26,8 +26,8 @@ export default function StartMenu({ onOpen, onClose }) {
 
       <div className="start-bottom">
         <button><Volume2 size={15} /> Sound</button>
-        <button><Settings size={15} /> Settings</button>
-        <button><RotateCcw size={15} /> Restart Game</button>
+        <button onClick={() => onOpen("settings")}><Settings size={15} /> Settings</button>
+        <button onClick={onRestart}><RotateCcw size={15} /> Restart Game</button>
         <button onClick={onClose}><Power size={15} /> Exit</button>
       </div>
     </div>
