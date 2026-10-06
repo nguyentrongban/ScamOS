@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Paperclip, Send, Search, Phone, MoreHorizontal, Lock } from "lucide-react";
+import { getRank } from "../lib/ranks";
 
-export default function TeleCRM({ contacts, onSend }) {
+export default function TeleCRM({ contacts, stats, onSend }) {
   const [selectedId, setSelectedId] = useState(contacts[0].id);
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
@@ -53,7 +54,9 @@ export default function TeleCRM({ contacts, onSend }) {
               <div className="min-w-0 flex-1 text-left">
                 <div className="truncate text-sm font-semibold">{contact.name}</div>
                 <div className="truncate text-xs text-slate-500">
-                  {contact.status === "active" ? contact.handle : "🚫 đã báo cáo"}
+                  {contact.status === "active" && contact.handle}
+                  {contact.status === "reported" && "🚫 đã báo cáo"}
+                  {contact.status === "succeeded" && "✅ đã thành công"}
                 </div>
               </div>
               <span className="trust-mini">{contact.trust}</span>
@@ -67,7 +70,7 @@ export default function TeleCRM({ contacts, onSend }) {
           <div>
             <div className="font-semibold">{selected.name}</div>
             <div className="text-xs text-emerald-400">
-              {locked ? "offline • đã khóa" : selected.typing ? "đang nhập..." : selected.online ? "online" : "offline"}
+              {locked ? "đã kết thúc" : selected.typing ? "đang nhập..." : selected.online ? "online" : "offline"}
             </div>
           </div>
           <div className="flex gap-1">
@@ -76,16 +79,28 @@ export default function TeleCRM({ contacts, onSend }) {
           </div>
         </div>
 
+        <RankBar stats={stats} />
+
+        <div className="chat-meters">
+          <MiniMeter label="Trust" value={selected.trust} />
+          <MiniMeter label="Emotion" value={selected.emotion} />
+          <MiniMeter label="Suspicion" value={selected.suspicion} danger />
+        </div>
+
         <div className="chat-messages">
           <div className="chat-date">TODAY • SESSION #{selected.id}04</div>
-          {selected.messages.map((m, i) => (
-            <div key={i} className={`message-row ${m.from === "me" ? "mine" : ""}`}>
-              <div className="message-bubble">
-                <div>{m.text}</div>
-                <small>{m.time}</small>
+          {selected.messages.map((m, i) => {
+            if (m.from === "tip") return <div key={i} className="tip-line">💡 {m.text}</div>;
+            if (m.from === "summary") return <div key={i} className="summary-box">{m.text}</div>;
+            return (
+              <div key={i} className={`message-row ${m.from === "me" ? "mine" : ""}`}>
+                <div className="message-bubble">
+                  <div>{m.text}</div>
+                  <small>{m.time}</small>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {selected.typing && (
             <div className="message-row">
               <div className="message-bubble"><small>...</small></div>
@@ -96,7 +111,7 @@ export default function TeleCRM({ contacts, onSend }) {
 
         {locked ? (
           <div className="chat-input justify-center text-xs text-rose-400">
-            <Lock size={14} /> &nbsp;Cuộc trò chuyện đã bị khóa
+            <Lock size={14} /> &nbsp;Cuộc trò chuyện đã kết thúc
           </div>
         ) : (
           <div className="chat-input">
@@ -148,6 +163,37 @@ function Meter({ label, value, danger }) {
       <div className="meter-track">
         <div className={`meter-fill ${danger ? "danger" : ""}`} style={{ width: `${value}%` }} />
       </div>
+    </div>
+  );
+}
+
+function MiniMeter({ label, value, danger }) {
+  return (
+    <div className="mini-meter">
+      <div className="mini-meter-label">
+        <span>{label}</span><b>{value}%</b>
+      </div>
+      <div className="meter-track">
+        <div className={`meter-fill ${danger ? "danger" : ""}`} style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function RankBar({ stats }) {
+  const { current, next, progress } = getRank(stats.success);
+  return (
+    <div className="rank-bar">
+      <div className="rank-row">
+        <span>Cấp: <b>{current.name}</b></span>
+        <span>✅ {stats.success} &nbsp;🚫 {stats.failed}</span>
+      </div>
+      <div className="meter-track">
+        <div className="meter-fill" style={{ width: `${progress}%` }} />
+      </div>
+      <small>
+        {next ? `Còn ${next.need - stats.success} vụ thành công để lên ${next.name}` : "Bạn đã đạt cấp cao nhất"}
+      </small>
     </div>
   );
 }

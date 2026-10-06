@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { DEFAULT_MODEL, getSettings, saveSettings, clearSettings, testConnection } from "../lib/gemini";
 
-export default function Settings() {
+export default function Settings({ profileName = "Operator", onSaveName }) {
   const initial = getSettings();
+  const [name, setName] = useState(profileName);
   const [apiKey, setApiKey] = useState(initial.apiKey);
   const [model, setModel] = useState(initial.model);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
 
   const save = () => {
+    onSaveName?.(name.trim().slice(0, 24) || "Operator");
     saveSettings({ apiKey: apiKey.trim(), model: model.trim() || DEFAULT_MODEL });
     setStatus("Đã lưu cài đặt.");
   };
@@ -30,6 +32,16 @@ export default function Settings() {
 
   return (
     <div className="p-4 text-sm space-y-3">
+      <div>
+        <label className="block text-xs text-slate-400 mb-1">Tên tài khoản</label>
+        <input
+          value={name}
+          maxLength={24}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full rounded bg-slate-900 border border-slate-700 px-2 py-1.5 outline-none"
+        />
+      </div>
+
       <div>
         <label className="block text-xs text-slate-400 mb-1">Gemini API key</label>
         <input
